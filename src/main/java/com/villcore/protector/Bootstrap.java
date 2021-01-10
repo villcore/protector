@@ -16,11 +16,14 @@ public final class Bootstrap {
     private static final Logger log = LoggerFactory.getLogger(Bootstrap.class);
 
     public static void main(String[] args) throws InterruptedException {
-        int serverPort = 12345;
+        ClientManager clientManager = new ClientManager();
+        clientManager.startup();
+        System.out.println("c");
 
         // start rpc server
+        int serverPort = 12345;
         CommandExecuteHandlers commandExecuteHandlers = new CommandExecuteHandlers();
-        RequestServer requestServer = new RequestServer(serverPort, commandExecuteHandlers);
+        RequestServer requestServer = new RequestServer(serverPort, clientManager, commandExecuteHandlers);
         requestServer.startup();
         System.out.println("a");
 
@@ -29,10 +32,6 @@ public final class Bootstrap {
         requestClient.startup();
         System.out.println("b");
 
-
-        ClientManager clientManager = new ClientManager();
-        clientManager.startup();
-        System.out.println("c");
 
         IpScanDiscovery discovery = new IpScanDiscovery();
         discovery.startup();
