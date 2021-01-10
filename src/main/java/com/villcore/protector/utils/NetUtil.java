@@ -63,9 +63,9 @@ public class NetUtil {
     }
 
     public static boolean reachable(InetAddress inetAddress) {
-        if (inetAddress.getAddress()[3] >= 110 || inetAddress.getAddress()[3] <= 99) {
-            return false;
-        }
+//        if (inetAddress.getAddress()[3] >= 110 || inetAddress.getAddress()[3] <= 99) {
+//            return false;
+//        }
         String host = inetAddress.getHostAddress();
         String cmd = null;
         if (PlatformDependent.isOsx()) {
