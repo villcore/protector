@@ -21,7 +21,11 @@ public class RequestClient {
         return (T) this.rpcClient.invokeSync(address, obj, 5000);
     }
 
-    public void startup() {}
+    public void startup() {
+        rpcClient.startup();
+    }
 
-    public void shutdown() {}
+    public void shutdown() {
+        rpcClient.shutdown();
+    }
 }
