@@ -1,6 +1,7 @@
 package com.villcore.protector.utils;
 
 import com.sun.istack.internal.Nullable;
+import io.netty.util.internal.PlatformDependent;
 
 import java.io.IOException;
 import java.net.*;
@@ -53,12 +54,37 @@ public class NetUtil {
     }
 
     public static boolean reachable(InetAddress inetAddress) {
-        try {
-            return inetAddress.isReachable(100);
-        } catch (IOException e) {
-            // just ignore
+//        try {
+//            return inetAddress.isReachable(100);
+//        } catch (IOException e) {
+//            // just ignore
+//        }
+//        return false;
+        String host = inetAddress.getHostAddress();
+        String cmd = null;
+        if (PlatformDependent.isOsx()) {
+            cmd = "ping -c 1 -W 100 " + host;
         }
-        return false;
+
+        if (PlatformDependent.isWindows()) {
+            cmd = "cmd /c ping -n 1 -w 100";
+        }
+
+        if (cmd == null) {
+            return false;
+        }
+
+        try {
+            Process proc = Runtime.getRuntime().exec(cmd);
+            int exit = proc.waitFor();
+            if (exit == 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Nullable
@@ -71,7 +97,13 @@ public class NetUtil {
         return null;
     }
 
-    public static void main(String[] args) {
-        System.out.println(getHostname());
+    public static void main(String[] args) throws Exception {
+//        getAllClassCAddress(getLocalHostAddress()).forEach(inetAddress -> {
+//            System.out.println(inetAddress.getHostAddress() + " => " + reachable(inetAddress));
+//        });
+
+        InetAddress inetAddress = InetAddress.getByName("192.168.0.103");
+        System.out.println(inetAddress.getHostAddress() + " => " + reachable(inetAddress));
+
     }
 }
