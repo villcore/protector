@@ -1,6 +1,8 @@
 package com.villcore.protector.gui;
 
+import com.villcore.protector.client.ClientIdentity;
 import com.villcore.protector.client.ClientManager;
+import com.villcore.protector.client.ClientStateCode;
 import com.villcore.protector.client.command.CommandBroadcaster;
 import com.villcore.protector.command.CommandCode;
 import com.villcore.protector.utils.NamedThreadFactory;
@@ -47,7 +49,18 @@ public class MainFrame {
         this.scheduler = Executors.newScheduledThreadPool(1, new NamedThreadFactory("update-host-list"));
         this.scheduler.scheduleAtFixedRate(() -> {
             host_list.clearSelection();
-            host_list.setListData(clientManager.listAllClientState().toArray());
+            Object[] array = clientManager.listAllClientState().stream()
+                    .map(clientState -> {
+                        ClientIdentity clientIdentity = clientState.getClientIdentity();
+                        String host = clientIdentity.getHost();
+                        String address = clientIdentity.getAddress();
+                        long lastTouchTimeMillis = clientState.getLastUpdateTimestamp();
+                        ClientStateCode stateCode = clientState.getStateCode();
+                        return host + " (" + address + ")"
+                                + (stateCode == ClientStateCode.ONLINE ? "在线" : "离线") + " - 最后通信: "
+                                + ((System.currentTimeMillis() - lastTouchTimeMillis) / 1000) + "秒前";
+                    }).toArray();
+            host_list.setListData(array);
         }, 5, 3, TimeUnit.SECONDS);
 
         JFrame frame = new JFrame("MainFrame");
@@ -56,7 +69,4 @@ public class MainFrame {
         frame.pack();
         frame.setVisible(true);
     }
-
-
-
 }
