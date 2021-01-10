@@ -29,14 +29,10 @@ public class NetUtil {
 
     @Nullable
     public static InetAddress getLocalHostAddress() {
-        try {
-            Enumeration<NetworkInterface> networkInterfaceEnumeration = NetworkInterface.getNetworkInterfaces();
-            while (networkInterfaceEnumeration.hasMoreElements()) {
-                System.out.println(networkInterfaceEnumeration.nextElement());
-            }
-        } catch (Exception e) {
-
+        if (PlatformDependent.isWindows()) {
+            return Inet4Address.getLoopbackAddress();
         }
+
         NetworkInterface availableNetworkInterface = null;
         try {
             // TODO: check os
