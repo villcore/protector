@@ -29,20 +29,19 @@ public class NetUtil {
 
     @Nullable
     public static InetAddress getLocalHostAddress() {
-        if (PlatformDependent.isWindows()) {
-            return Inet4Address.getLoopbackAddress();
-        }
-
         NetworkInterface availableNetworkInterface = null;
         try {
-            // TODO: check os
+            if (PlatformDependent.isWindows()) {
+                return InetAddress.getLocalHost();
+            }
+
             NetworkInterface eth0 = NetworkInterface.getByName("en0");
             NetworkInterface wlan0 = NetworkInterface.getByName("wlan0");
             if (eth0 == null && wlan0 == null) {
                 throw new IllegalStateException("Can not found available network interface ");
             }
             availableNetworkInterface = eth0 != null ? eth0 : wlan0;
-        } catch (SocketException e) {
+        } catch (Exception e) {
             // just ignore
         }
 
