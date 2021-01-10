@@ -57,7 +57,9 @@ public class ClientSupervisor {
                 .filter(inetAddress -> !inetAddress.getHostAddress().equals(NetUtil.getLocalHostAddress().getHostAddress()))
                 .forEach(inetAddress -> {
                     try {
-                        requestClient.touch(getServerAddress(inetAddress), new ClientIdentityRequest(clientManager.localClientIdentity()));
+                        String serverAddress = getServerAddress(inetAddress);
+                        requestClient.touch(serverAddress, new ClientIdentityRequest(clientManager.localClientIdentity()));
+                        log.info("Invoke touch client server {} success ", serverAddress);
                     } catch (Exception e) {
                         log.error("Invoke touch client server error ", e);
                     }
