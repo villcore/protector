@@ -47,8 +47,11 @@ public class NetUtil {
         }
 
         Enumeration<InetAddress> addressEnumeration = availableNetworkInterface.getInetAddresses();
-        if (addressEnumeration.hasMoreElements()) {
-            return addressEnumeration.nextElement();
+        while (addressEnumeration.hasMoreElements()) {
+            InetAddress inetAddress = addressEnumeration.nextElement();
+            if (inetAddress instanceof Inet4Address) {
+                return inetAddress;
+            }
         }
         return null;
     }
@@ -67,7 +70,7 @@ public class NetUtil {
         }
 
         if (PlatformDependent.isWindows()) {
-            cmd = "cmd /c ping -n 1 -w 100";
+            cmd = "ping -n 1 -w 100 " + host;
         }
 
         if (cmd == null) {

@@ -24,7 +24,7 @@ public class IpScanDiscovery implements Discovery {
     private final Set<InetAddress> hostSet;
 
     public IpScanDiscovery() {
-        this.scheduler = Executors.newScheduledThreadPool(1, new NamedThreadFactory("ip-scan-discovery-scheduler"));
+        this.scheduler = Executors.newScheduledThreadPool(2, new NamedThreadFactory("ip-scan-discovery-scheduler"));
         this.hostSet = new CopyOnWriteArraySet<>();
     }
 
