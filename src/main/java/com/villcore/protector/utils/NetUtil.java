@@ -2,14 +2,17 @@ package com.villcore.protector.utils;
 
 import com.sun.istack.internal.Nullable;
 import io.netty.util.internal.PlatformDependent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
 public class NetUtil {
+
+    private static final Logger log = LoggerFactory.getLogger(NetUtil.class);
 
     public static List<InetAddress> getAllClassCAddress(InetAddress address) {
         byte[] addressParts = address.getAddress();
@@ -60,12 +63,9 @@ public class NetUtil {
     }
 
     public static boolean reachable(InetAddress inetAddress) {
-//        try {
-//            return inetAddress.isReachable(100);
-//        } catch (IOException e) {
-//            // just ignore
-//        }
-//        return false;
+        if (inetAddress.getAddress()[3] >= 110 || inetAddress.getAddress()[3] <= 99) {
+            return false;
+        }
         String host = inetAddress.getHostAddress();
         String cmd = null;
         if (PlatformDependent.isOsx()) {
@@ -77,6 +77,7 @@ public class NetUtil {
         }
 
         if (cmd == null) {
+            log.info("IP address {} not reachable ", host);
             return false;
         }
 
@@ -84,11 +85,14 @@ public class NetUtil {
             Process proc = Runtime.getRuntime().exec(cmd);
             int exit = proc.waitFor();
             if (exit == 0) {
+                log.info("IP address {} reachable ", host);
                 return true;
             } else {
+                log.info("IP address {} not reachable ", host);
                 return false;
             }
         } catch (Exception e) {
+            log.info("IP address {} not reachable ", host);
             return false;
         }
     }
