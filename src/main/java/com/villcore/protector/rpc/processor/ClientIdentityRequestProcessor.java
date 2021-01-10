@@ -11,6 +11,10 @@ public class ClientIdentityRequestProcessor extends AbstractUserProcessor<Client
 
     private ClientManager clientManager;
 
+    public ClientIdentityRequestProcessor(ClientManager clientManager) {
+        this.clientManager = clientManager;
+    }
+
     @Override
     public void handleRequest(BizContext bizCtx, AsyncContext asyncCtx, ClientIdentityRequest request) {
         clientManager.touch(request.getClientIdentity());
