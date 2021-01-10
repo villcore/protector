@@ -29,6 +29,14 @@ public class NetUtil {
 
     @Nullable
     public static InetAddress getLocalHostAddress() {
+        try {
+            Enumeration<NetworkInterface> networkInterfaceEnumeration = NetworkInterface.getNetworkInterfaces();
+            while (networkInterfaceEnumeration.hasMoreElements()) {
+                System.out.println(networkInterfaceEnumeration.nextElement());
+            }
+        } catch (Exception e) {
+
+        }
         NetworkInterface availableNetworkInterface = null;
         try {
             // TODO: check os
@@ -101,9 +109,9 @@ public class NetUtil {
     }
 
     public static void main(String[] args) throws Exception {
-//        getAllClassCAddress(getLocalHostAddress()).forEach(inetAddress -> {
-//            System.out.println(inetAddress.getHostAddress() + " => " + reachable(inetAddress));
-//        });
+        getAllClassCAddress(getLocalHostAddress()).forEach(inetAddress -> {
+            System.out.println(inetAddress.getHostAddress() + " => " + reachable(inetAddress));
+        });
 
         InetAddress inetAddress = InetAddress.getByName("192.168.0.103");
         System.out.println(inetAddress.getHostAddress() + " => " + reachable(inetAddress));
